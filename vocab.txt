@@ -1,4 +1,4 @@
-﻿lead 0
+lead 0
 by 1
 unkn 2
 , 3
@@ -2308,6 +2308,5 @@ floor 2306
 el 2307
 unkt 2308
 icon 2309
-unk` 2310
-unk( 2311
-unk) 2312
+unk( 2310
+unk) 2311

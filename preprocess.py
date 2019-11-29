@@ -1,10 +1,19 @@
 import csv, re, nltk
+from collections import defaultdict
 from tqdm import tqdm
+try:
+    nltk.pos_tag(nltk.word_tokenize("doing"))
+    nltk.stem.WordNetLemmatizer().lemmatize("doing", "do")
+except LookupError:
+    nltk.download()
 
 def string_to_list(string):
     return re.findall(r"'id': (\d+), 'name': '(\w+)'",string)
+
+
 def sort(dictionary, rev=False):
     return sorted(dictionary.items(), key=lambda kv:(kv[1], kv[0]), reverse=rev)
+
 
 def parse_row(row, genre_dict):
     ovv = row[9].split(" ")
@@ -21,7 +30,7 @@ def parse_row(row, genre_dict):
             return row[5], row[6], genres, row[9] 
     return None
 
-filename = '../the-movies-dataset/movies_metadata.csv'
+filename = 'data/the-movies-dataset/movies_metadata.csv'
 # reader = csv_reader()
 
 data = []
@@ -50,7 +59,7 @@ with open(filename,'r', newline='', encoding='utf-8') as csvfile:
 # print(id_to_genre)
 
 #Count lemmatize verbs and nouns:
-lemmas = dict()
+lemmas = defaultdict(lambda: 0)
 lemmer = nltk.stem.WordNetLemmatizer()
 
 for s in tqdm(synopses):
@@ -63,10 +72,7 @@ for s in tqdm(synopses):
         if part =='n' or part =='v':
             token = lemmer.lemmatize(token, part)
         
-        if token in lemmas:
-            lemmas[token]+=1
-        else:
-            lemmas[token]=1
+        lemmas[token] += 1
 
 # print(len(lemmas))
 
@@ -90,7 +96,7 @@ for s in tqdm(synopses):
         
         if token not in vocab_key:
             vocab_key[token] = ind
-            ind+=1                    
+            ind += 1                    
         sent.append(str(vocab_key[token]))
     
     tokens.append(sent)

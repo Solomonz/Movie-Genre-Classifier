@@ -8,18 +8,14 @@ def fetch(size, shuffle=False):
         for line in file:
             length += 1
             nextLine = line.strip().split(",")
-            nll=len(nextLine)
-            if nll>=size:
-                nextLine= np.array(nextLine[:size])
-            else:
-                nextLine = np.array(nextLine)
-                nextLine = np.append(nextLine, np.zeros(size-nll))
-            tokens.append(nextLine)
+            nll = min(len(nextLine), size)
+            nextLine = nextLine[:nll] + [0] * (size - nll)
+            tokens.append(np.array(nextLine))
     
     # tokens=np.array(tokens, dtype=np.float64)
 
     
-    return tokens
+    return np.array(tokens)
             
 
 print(fetch(60)[0,:])
