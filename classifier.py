@@ -113,9 +113,9 @@ def generate_sentence(word1, length, vocab,model):
 
 
 def main():
-    train_inputs, train_labels, test_inputs, test_labels, vocab_dict, num_genres = get_data()
+    train_inputs, train_labels, test_inputs, test_labels, vocab_len, num_genres, pad_id = get_data()
 
-    model = Model(len(vocab_dict), num_genres)
+    model = Model(vocab_len, num_genres)
 
     #train_tokens = train_tokens[:len(train_tokens) - ((len(train_tokens) - 1) % (model.window_size * model.batch_size))]
     #test_tokens = test_tokens[:len(test_tokens) - ((len(test_tokens) - 1) % (model.window_size * model.batch_size))]

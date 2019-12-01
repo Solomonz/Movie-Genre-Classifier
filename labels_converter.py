@@ -1,13 +1,13 @@
-numsDict = dict()
+numsDict = {}
 genres = []
 
 ind = 0
 
 with open('genre_to_id.txt', 'r') as file:
     for line in file:
-        num, genre = line.split(":")
+        num, genre = line.strip().split(":")
         numsDict[num] = str(ind)
-        ind +=1
+        ind += 1
         genres.append(genre)
 
 
@@ -18,7 +18,7 @@ with open('updated_genres.txt', 'w') as file:
 labels=[]
 with open('labels.txt', 'r') as file:
     for line in file:
-        labels.append(line.split(","))
+        labels.append(line.strip().split(","))
 
 for l in range(len(labels)):
     labels[l] = [str(numsDict[n.strip()]) for n in labels[l]]
