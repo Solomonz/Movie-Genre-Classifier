@@ -2,7 +2,7 @@ import tensorflow as tf
 from tqdm import tqdm
 
 
-def get_data(window_size=60, test_fraction=0.1, shuffle=False):
+def get_data(window_size, test_fraction=0.1, shuffle=True):
     assert 0.01 <= test_fraction <= 0.99
 
     with open('vocab.txt', 'r') as vocab_file:
@@ -27,9 +27,9 @@ def get_data(window_size=60, test_fraction=0.1, shuffle=False):
         return tokens[:num_relevant_tokens] + [pad_id] * (window_size - num_relevant_tokens)
 
     def convert_labels_to_onehot(labels):
-        out = [0] * num_genres
+        out = [0.0] * num_genres
         for label in labels:
-            out[label] = 1
+            out[label] = 1.0
 
         return tf.convert_to_tensor(out)
 
