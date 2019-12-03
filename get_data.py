@@ -5,7 +5,7 @@ from tqdm import tqdm
 def get_data(window_size, test_fraction=0.1, shuffle=True):
     assert 0.01 <= test_fraction <= 0.99
 
-    with open('vocab.txt', 'r') as vocab_file:
+    with open('vocab.txt', 'r', encoding='utf-8') as vocab_file:
         vocab_lines = map(lambda line: line.strip().split(), vocab_file)
         vocab = {}
         reverse_vocab = {}
@@ -17,7 +17,7 @@ def get_data(window_size, test_fraction=0.1, shuffle=True):
     vocab['*pad*'] = pad_id
     reverse_vocab[pad_id] = '*pad*'
 
-    with open('updated_genres.txt', 'r') as genres_file:
+    with open('updated_genres.txt', 'r',encoding='utf-8') as genres_file:
         num_genres = 0
         for _ in genres_file:
             num_genres += 1
@@ -33,7 +33,7 @@ def get_data(window_size, test_fraction=0.1, shuffle=True):
 
         return tf.convert_to_tensor(out)
 
-    with open('tokens.txt', 'r') as tokens_file:
+    with open('tokens.txt', 'r',encoding='utf-8') as tokens_file:
         lines = [line.strip() for line in tokens_file]
     
     num_datapoints = len(lines)
@@ -45,7 +45,7 @@ def get_data(window_size, test_fraction=0.1, shuffle=True):
 
     tokens_data = tf.convert_to_tensor(list(map(fit_to_size, get_iterator(tokenized_lines, "tokenizing and fitting"))))
 
-    with open('labels_converted.txt', 'r') as labels_file:
+    with open('labels_converted.txt', 'r',encoding='utf-8') as labels_file:
         labels = tf.convert_to_tensor(list(map(convert_labels_to_onehot, map(lambda line: map(int, line.strip().split()), get_iterator(labels_file, "reading and converting labels")))))
 
     indices = tf.range(tokens_data.shape[0])
