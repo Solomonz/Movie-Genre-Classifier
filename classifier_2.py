@@ -38,7 +38,6 @@ class Model(tf.keras.Model):
         hidden1 = self.W1(output_state)
         # hidden2 = self.W2(hidden1)
         logits = self.W3(hidden1)
-
         return logits
 
     def loss(self, logits, labels):
@@ -49,6 +48,7 @@ class Model(tf.keras.Model):
         :param labels: multihot matrix of shape (batch_size, num_genres) containing the labels
         :return: the loss of the model as a tensor of size 1
         """
+        # loss = tf.keras.losses.binary_crossentropy(labels, logits,from_logits=False)
         loss = tf.keras.losses.binary_crossentropy(labels, logits,from_logits=False)
         return tf.reduce_mean(loss)
 
@@ -92,11 +92,6 @@ def test(model, test_inputs, test_labels):
 def main():
     window_size = 50
     train_inputs, train_labels, test_inputs, test_labels, vocab_len, num_genres, pad_id = get_data(window_size)
-    # print(train_inputs.shape)
-    # print(test_inputs.shape)
-    # print(train_labels.shape)
-    # print(test_labels.shape)
-    
 
     model = Model(vocab_len, num_genres, window_size, pad_id)
     epochs = 5

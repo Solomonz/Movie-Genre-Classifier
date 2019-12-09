@@ -5,11 +5,11 @@ import json
 def get_data(window_size, test_fraction=0.15, shuffle=True):
     assert 0.01 <= test_fraction <= 0.99
 
+    #TODO: Fix the json!
 
     vocab = dict()
     with open('vocab_2.txt', 'r') as file:
         vocab = json.loads(file.readline())
-    
     genres = dict()
     with open('genres_2.txt', 'r') as file:
         genres = json.loads(file.readline())
