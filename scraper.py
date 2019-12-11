@@ -19,17 +19,17 @@ def scrape_synopsis(imdb_id):
 
 
 def save_to_file(synopses):
-    with open('full_synopses.json', 'r') as synopses_file:
+    with open('processed/full_synopses.json', 'r') as synopses_file:
         existing = load(synopses_file)
 
     existing.update(synopses)
 
-    with open('full_synopses.json', 'w') as synopses_file:
+    with open('processed/full_synopses.json', 'w') as synopses_file:
         dump(existing, synopses_file, indent=None, separators=(',', ':'))
 
 
 def main():
-    with open('full_synopses.json', 'r') as synopses_file:
+    with open('processed/full_synopses.json', 'r') as synopses_file:
         known_synopses = load(synopses_file)
 
     #known_synopses = {imdbid: known_synopses[imdbid] for imdbid in filter(lambda i: known_synopses[i].find('It looks like we don\'t have a Synopsis for this title yet. Be the first to contribute! Just click the "Edit page" button') == -1, known_synopses.keys())}
