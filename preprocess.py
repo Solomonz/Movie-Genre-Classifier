@@ -1,9 +1,10 @@
-import csv, re, nltk
+import re, nltk
 from collections import defaultdict
+from csv import DictReader
 from tqdm import tqdm
 import numpy 
 import string
-from json import dump
+from json import dump, loads
 # try:
 #     nltk.pos_tag(nltk.word_tokenize("doing"))
 #     nltk.stem.WordNetLemmatizer().lemmatize("doing", "do")
@@ -23,7 +24,7 @@ genre_dict = dict()
 
 #Splits a sentence into list of stemmed strings (string tokens) 
 #TODO: REMOVE ALL OTHER PUNCTUATION!
-def splitter(tosplit, resplit = resplit, stemmer=stemmer):
+def splitter(tosplit, resplit=resplit, stemmer=stemmer):
     splitted = resplit.split(tosplit)
     splitted = [s.translate(str.maketrans('', '', string.punctuation)) for s in splitted] 
     splitted = [[stemmer.stem(x) for x in s.split()] for s in splitted]
@@ -38,39 +39,37 @@ def sort(dictionary, rev=False):
     return sorted(dictionary.items(), key=lambda kv:(kv[1], kv[0]), reverse=rev)
 
 #Returning set of genres (may be empty) and list of sentences (split/stemmed)
-def parse_row(row, genre_dict=genre_dict, uesless=useless):
-    ovv = row[9].split(" ")
-    if len(ovv)>5:
-        genres = set()
-        gid = string_to_list(row[3])
-        # print(gid)
-        if gid is not None and len(gid)>0:
-            for g in gid:
-                if g[0] not in useless:
-                    if g[0] not in genre_dict:
-                        genre_dict[g[0]] = str(len(genre_dict))
-                    genres.add(str(genre_dict[g[0]]))
-            return genres, splitter(row[9])
-    return None
+def parse_row(row):
+    ovv = row['overview']
+    if len(ovv) > 5:
+        #gid = string_to_list(row['genres'])
+        labels = set()
+        genres = set(map(lambda inner_genre_dict: inner_genre_dict['name'], loads(row['genres'].replace("'", '"')))) - useless
+        if len(genres) > 0:
+            for genre in genres:
+                if genre not in genre_dict:
+                    genre_dict[genre] = str(len(genre_dict))
+                labels.add(genre_dict[genre])
+            return labels, splitter(row['overview'])
+    return None, None
 
-# reader = csv_reader()
 
 data = []
-f=0
-s=0
+f = 0
+s = 0
 synopses = []
 labels = []
 
 filename = 'data/the-movies-dataset/movies_metadata.csv'
 #Get genre and synposis from CSV
 # READ FROM FILE--> SHOULD CHANGE
-with open(filename,'r', newline='', encoding='utf-8') as csvfile:
-    reader = csv.reader(csvfile, dialect='excel')
+with open(filename, 'r', newline='', encoding='utf-8') as csvfile:
+    reader = DictReader(csvfile)
     for row in tqdm(reader):
-        parsed = parse_row(row, genre_dict)
-        if parsed is not None and len(parsed[0]) >0 and len(parsed[1])>0:
-            labels.append(parsed[0])
-            synopses.append(parsed[1])
+        genres, tokens = parse_row(row)
+        if genres is not None and len(tokens) > 0:
+            labels.append(genres)
+            synopses.append(tokens)
 
 if len(labels) != len(synopses):
     raise Exception(f'Preprocessing error: label length {len(labels)} did not equal synopses lengths {len(synopses)}')
@@ -131,13 +130,13 @@ with open('processed/tokens.txt', 'w') as tokens_file, open('processed/labels.tx
                         else:
                             towrite.append(vocab['*UNK*'])
                 towrite.append(vocab['*BREAK*'])
-            if len(towrite) == 0:
-                continue
-            tokens_file.write(",".join(towrite))
-            tokens_file.write('\n')
-            
-            labels_file.write(",".join(labels[i]))
-            labels_file.write('\n')
+        if len(towrite) == 0:
+            continue
+        tokens_file.write(",".join(towrite))
+        tokens_file.write('\n')
+        
+        labels_file.write(",".join(labels[i]))
+        labels_file.write('\n')
 
 
 with open('processed/genres.json', 'w') as genres_file:
