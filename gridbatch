@@ -1,0 +1,7 @@
+#! /bin/bash
+
+#$ -cwd
+#$ -t 1-91105
+#$ -q '*@@mblade12'
+
+python3 binary_classifier.py $SGE_TASK_ID 3

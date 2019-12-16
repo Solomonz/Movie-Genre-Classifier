@@ -32,13 +32,6 @@ def main():
     with open('processed/full_synopses.json', 'r') as synopses_file:
         known_synopses = load(synopses_file)
 
-    #known_synopses = {imdbid: known_synopses[imdbid] for imdbid in filter(lambda i: known_synopses[i].find('It looks like we don\'t have a Synopsis for this title yet. Be the first to contribute! Just click the "Edit page" button') == -1, known_synopses.keys())}
-#
-    #with open('full_synopses.json', 'w') as sf:
-        #dump(known_synopses, sf, indent=None, separators=(',', ':'))
-#
-    #exit(0)
-
     with open('data/the-movies-dataset/movies_metadata.csv', 'r') as data_file:
         reader = DictReader(data_file)
         imdb_ids = set()
